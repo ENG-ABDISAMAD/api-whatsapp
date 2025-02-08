@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Message Sender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Send WhatsApp Message</h2>
+        <form id="messageForm">
+            <input type="text" id="senderId" placeholder="Enter your ID" required>
+            <input type="text" id="senderName" placeholder="Enter your name" required>
+            <input type="text" id="receiverId" placeholder="Enter receiver ID" required>
+            <input type="text" id="receiverName" placeholder="Enter receiver name" required>
+            <input type="text" id="phone" placeholder="Enter phone number (e.g. +252617061918)" required>
+            <textarea id="message" placeholder="Enter your message" required></textarea>
+            <button type="button" onclick="sendMessage()">Send Message</button>
+        </form>
+        <p id="response"></p>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var senderId = document.getElementById('senderId').value;
+            var senderName = document.getElementById('senderName').value;
+            var receiverId = document.getElementById('receiverId').value;
+            var receiverName = document.getElementById('receiverName').value;
+            var phone = document.getElementById('phone').value;
+            var message = document.getElementById('message').value;
+            
+            var fullMessage = `From: ${senderName} (ID: ${senderId})\nTo: ${receiverName} (ID: ${receiverId})\nMessage: ${message}`;
+            
+            var token = "ay6e0zoj4hzpu2y6";
+            var instanceId = "instance106485";
+            var url = `https://api.ultramsg.com/${instanceId}/messages/chat`;
+            
+            var data = new URLSearchParams();
+            data.append("token", token);
+            data.append("to", phone);
+            data.append("body", fullMessage);
+            
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('response').innerText = `Response: ${result.message}`;
+            })
+            .catch(error => {
+                document.getElementById('response').innerText = "Error sending message.";
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
